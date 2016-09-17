@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
 import fetch from 'isomorphic-fetch'
-import Pages from '../components/pages'
+import Pages from '../../components/Pages'
 
 export default class PagesContainer extends Component{
     state={
