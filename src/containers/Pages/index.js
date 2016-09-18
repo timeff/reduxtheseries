@@ -1,30 +1,44 @@
-import React,{Component} from 'react'
-import fetch from 'isomorphic-fetch'
+import React,{Component, PropTypes} from 'react'
 import Pages from '../../components/Pages'
 
-export default class PagesContainer extends Component{
-    state={
-        pages:[]
+//action
+import {loadPages} from '../../actions/page'
+
+//redux store
+import {connect} from 'react-redux'
+
+class PagesContainer extends Component{
+
+    static propTypes ={
+        pages: PropTypes.array.isRequired,
+        onLoadPages:PropTypes.func.isRequired
     }
 
   componentDidMount(){
       this.onReloadPages()
   }
 
-  shouldComponentUpdate(_nextProps,nextState){
-      return this.state.pages!==nextState.pages;
+shouldComponentUpdate(nextProps) {
+    return this.props.pages !== nextProps.pages;
   }
 
   onReloadPages=()=>{
-    fetch('http://localhost:5000/api/v1/pages')
-    .then((response) => response.json())
-    .then((pages) => {
-        console.log(pages)
-      this.setState({pages})})
+      this.props.onLoadPages()
   }
 
   render(){
-      return <Pages pages={this.state.pages} 
-      onReloadPages={this.onReloadPages}/>
+      return <div><Pages pages={this.props.pages} 
+      onReloadPages={this.onReloadPages}/></div>
   }
 }
+
+const mapStateToProps = (state) =>({
+    pages: state.pages
+})
+
+
+
+export default connect(
+  mapStateToProps,
+  {onLoadPages:loadPages}
+)(PagesContainer)
